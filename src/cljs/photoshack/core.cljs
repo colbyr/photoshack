@@ -4,21 +4,22 @@
               [secretary.core :as secretary :include-macros true]
               [goog.events :as events]
               [goog.history.EventType :as EventType]
-              [photoshack.ui.canvas :as canvas]
-              [photoshack.ui.controls :as controls])
+              [photoshack.ui.canvas :refer [canvas]]
+              [photoshack.ui.controls :refer [controls]])
     (:import goog.History))
 
 ;; -------------------------
 ;; Views
 
-(def state (atom {:editor {:brightness 0}
+(def state (atom {:editor {:brightness 0
+                           :contrast 0}
                   :name "kitteh.png"
                   :src "img/kitteh.png"}))
 
 (defn home-page []
   [:div
-   [canvas/render state]
-   [controls/render state]])
+   [canvas state]
+   [controls state]])
 
 (defn current-page []
   [:div [(session/get :current-page)]])
