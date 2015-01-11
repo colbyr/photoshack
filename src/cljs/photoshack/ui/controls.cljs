@@ -9,10 +9,9 @@
 (defn input-range [state prop]
   [:input {:max 100
            :min -100
-           :on-change #(handle-change state prop %)
+           :on-mouse-up #(handle-change state prop %)
            :step 1
-           :type "range"
-           :value (get-in @state [:editor prop])}])
+           :type "range"}])
 
 (defn controls [state]
   [:div

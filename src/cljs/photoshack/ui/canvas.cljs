@@ -4,7 +4,7 @@
 
 (def caman-render!
   (debounce (fn [caman state]
-    (.revert caman)
+    (.revert caman false)
     (.brightness caman (:brightness state))
     (.contrast caman (:contrast state))
     (.render caman)) 100))
@@ -19,7 +19,6 @@
   (let [caman (-> this r/state :caman)
         props (-> this r/props :editor-state :editor)]
     (when-not (nil? caman)
-      (.log js/console "update editor" (str props))
       (caman-render! caman props))))
 
 (defn- render [this]
@@ -28,7 +27,7 @@
 (def canvas-component
   (r/create-class
    {:component-did-mount create-editor!
-    :component-will-update update-editor!
+    :component-did-update update-editor!
     :get-initial-state (fn [] {:caman nil})
     :render render}))
 
