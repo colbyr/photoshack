@@ -14,7 +14,7 @@
            :type "range"}])
 
 (defn controls [state]
-  [:ul {:class "side-nav fixed"}
+  [:ul {:class "side-nav fixed full"}
    [:li
     [:label "Brightness" [input-range state :brightness]]]
    [:li
