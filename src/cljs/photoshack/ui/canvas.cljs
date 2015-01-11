@@ -10,19 +10,21 @@
     (.render caman)) 100))
 
 (defn- create-editor! [this]
-  (let [caman (js/Caman "#editor" "img/kitteh.png")]
-    (.log js/console "create editor" caman)
+  (let [caman (js/Caman "#editor" (-> this r/props :editor-state :src))]
     (caman-render! caman (-> this r/props :editor-state :editor))
     (r/set-state this {:caman caman})))
 
 (defn- update-editor! [this]
   (let [caman (-> this r/state :caman)
-        props (-> this r/props :editor-state :editor)]
+        props (-> this r/props :editor-state :editor)
+        src (-> this r/props :editor-state :src)]
     (when-not (nil? caman)
-      (caman-render! caman props))))
+      (if (= (.-imageUrl caman) src)
+        (caman-render! caman props)))))
 
 (defn- render [this]
-  [:canvas {:id "editor"}])
+  [:div {:class "container"}
+   [:canvas {:id "editor"}]])
 
 (def canvas-component
   (r/create-class
@@ -32,7 +34,4 @@
     :render render}))
 
 (defn canvas [state]
-  (fn []
-    [:div {:style {:margin-bottom "15px"}}
-     [:h2 (:name @state)]
-     [canvas-component {:editor-state @state}]]))
+  [canvas-component {:editor-state @state}])

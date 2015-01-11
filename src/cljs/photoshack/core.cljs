@@ -18,8 +18,8 @@
 
 (defn home-page []
   [:div
-   [canvas state]
-   [controls state]])
+   [controls state]
+   [canvas state]])
 
 (defn current-page []
   [:div [(session/get :current-page)]])
