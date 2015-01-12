@@ -63,10 +63,7 @@
     [:div container-style
      (when-not ready [:div "loading..."])
      [:canvas {:id "editor"
-               :style {:display (when-not ready "none")
-                       :position "relative"
-                       :top "50%"
-                       :transform "translateY(50%) translateX(50%)"}}]]))
+               :style {:display (when-not ready "none")}}]]))
 
 (def canvas-component
   (r/create-class
