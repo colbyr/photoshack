@@ -2,6 +2,7 @@
   (:require [clojure.string :refer [capitalize]]))
 
 (defn handle-change [state prop event]
+  (.log js/console prop (int (-> event .-target .-value)))
   (reset!
    state
    (swap! state assoc-in [:editor prop] (int (-> event .-target .-value)))))

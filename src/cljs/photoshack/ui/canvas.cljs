@@ -25,10 +25,14 @@
 (def caman-render!
   (debounce
    (fn [this caman state]
-    (.reset caman)
-    (.resize caman (clj->js (get-relative-size (r/state this))))
-    (mapv (partial caman-set! caman) state)
-    (.render caman))
+    (let [size (get-relative-size (r/state this))]
+      (if (= (.-height caman) (:height size))
+        (.revert caman false)
+        (let []
+          (.reset caman)
+          (.resize caman (clj->js size))))
+      (mapv (partial caman-set! caman) state)
+      (.render caman)))
    100
    false))
 
