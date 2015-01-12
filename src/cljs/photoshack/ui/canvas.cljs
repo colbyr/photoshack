@@ -4,11 +4,9 @@
 
 (defn- get-ratio [metrics]
   (let [{:keys [img-height img-width client-height client-width]} metrics]
-    (if (> img-width client-width)
-     (/ client-width img-width)
-     (if (> img-height client-height)
-       (/ client-height img-height)
-       1))))
+    (if (or (> img-width client-width) (> img-height client-height))
+      (/ (min client-height client-width) (min img-height img-width))
+      1)))
 
 (defn- get-relative-size [metrics]
   (let [{:keys [img-height img-width]} metrics
@@ -73,7 +71,8 @@
         src (-> this r/props :editor-state :src)]
     (when-not (nil? caman)
       (if (= (.-imageUrl caman) src)
-        (caman-render! this caman props)))))
+        (caman-render! this caman props)
+        (create-editor! this)))))
 
 (defn- is-ready [this]
   (and (-> this r/state :caman)
@@ -83,10 +82,10 @@
 (def container-style
   {:style {:height "100%"
            :position "fixed"
-           :top 20
-           :left 260
-           :bottom 20
-           :right 20}})
+           :top 0
+           :left 240
+           :bottom 0
+           :right 0}})
 
 (defn- render [this]
   (let [ready (is-ready this)]
@@ -95,7 +94,8 @@
      [:canvas {:id "editor"
                :style {:display (if ready "block" "none")
                        :position "relative"
-                       :transform "translateY(-50%)"
+                       :transform "translate(-50%,-50%)"
+                       :left "50%"
                        :top "50%"}}]]))
 
 (def canvas-component

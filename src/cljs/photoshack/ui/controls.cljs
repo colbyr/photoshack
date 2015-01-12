@@ -2,7 +2,6 @@
   (:require [clojure.string :refer [capitalize]]))
 
 (defn handle-change [state prop event]
-  (.log js/console prop (int (-> event .-target .-value)))
   (reset!
    state
    (swap! state assoc-in [:editor prop] (int (-> event .-target .-value)))))
@@ -19,8 +18,16 @@
 
 (def inputs [:brightness :contrast :saturation :vibrance :exposure])
 
-
-
 (defn controls [state]
-  [:ul {:class "side-nav fixed full"}
-   (map (partial input-range state) inputs)])
+  (let [{:keys [src]} @state]
+    [:ul {:class "side-nav fixed full"}
+     [:li
+      [:label "Image URL"
+       [:input
+        {:on-change #(reset!
+                      state
+                      (merge @state {:src (-> % .-target .-value)
+                                     :editor {}}))
+         :type "text"
+         :value src}]]]
+     (map (partial input-range state) inputs)]))

@@ -13,8 +13,7 @@
 
 (def state (atom {:editor {:brightness 0
                            :contrast 0}
-                  :name "kitteh.png"
-                  :src "img/kitteh.jpg"}))
+                  :src "img/me.jpg"}))
 
 (defn home-page []
   [:div
