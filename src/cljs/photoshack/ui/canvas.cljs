@@ -29,7 +29,6 @@
 
 (defn- get-image-metrics [this]
   (let [image (js/Image.)]
-    (.log js/console "getting image metrics")
     (set!
      (.-onload image)
      (fn [] (r/set-state this {:img-height (.-height image)
@@ -70,18 +69,22 @@
        (-> this r/state :img-height)))
 
 (def container-style
-  {:class "container"
-   :style {:height "100%"
-           :margin-top 30
-           :margin-bottom 30}})
+  {:style {:height "100%"
+           :position "fixed"
+           :top 20
+           :left 260
+           :bottom 20
+           :right 20}})
 
 (defn- render [this]
   (let [ready (is-ready this)]
-    (.log js/console "render" (-> this r/state str))
     [:div container-style
      (when-not ready [:div "loading..."])
      [:canvas {:id "editor"
-               :style {:display (when-not ready "none")}}]]))
+               :style {:display (if ready "block" "none")
+                       :position "relative"
+                       :transform "translateY(-50%)"
+                       :top "50%"}}]]))
 
 (def canvas-component
   (r/create-class
