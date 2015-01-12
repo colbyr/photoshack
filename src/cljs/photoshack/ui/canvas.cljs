@@ -41,10 +41,13 @@
 (defn- get-width [this]
   (-> this r/dom-node .-clientWidth))
 
-(defn resize! [this]
-  (.log js/console "resize!" (r/dom-node this))
-  (r/set-state this {:client-height (get-height this)
-                     :client-width (get-width this)}))
+(def resize!
+  (debounce
+   (fn [this]
+    (r/set-state this {:client-height (get-height this)
+                       :client-width (get-width this)}))
+   100
+   false))
 
 (defn- create-editor! [this]
   (let [caman (js/Caman "#editor" (-> this r/props :editor-state :src))]
