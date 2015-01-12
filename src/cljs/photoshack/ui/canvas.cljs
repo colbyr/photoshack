@@ -16,13 +16,18 @@
     {:height (* img-height ratio)
      :width (* img-width ratio)}))
 
+(defn- caman-set! [caman pair]
+  (js-invoke
+   caman
+   (name (first pair))
+   (second pair)))
+
 (def caman-render!
   (debounce
    (fn [this caman state]
     (.reset caman)
     (.resize caman (clj->js (get-relative-size (r/state this))))
-    (.brightness caman (:brightness state))
-    (.contrast caman (:contrast state))
+    (mapv (partial caman-set! caman) state)
     (.render caman))
    100
    false))
