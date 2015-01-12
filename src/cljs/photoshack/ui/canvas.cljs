@@ -2,12 +2,30 @@
   (:require [photoshack.utils.debounce :refer [debounce]]
             [reagent.core :as r]))
 
+(defn- get-ratio [metrics]
+  (let [{:keys [img-height img-width client-height client-width]} metrics]
+    (if (> img-width client-width)
+     (/ client-width img-width)
+     (if (> img-height client-height)
+       (/ client-height img-height)
+       1))))
+
+(defn- get-relative-size [metrics]
+  (let [{:keys [img-height img-width]} metrics
+        ratio (get-ratio metrics)]
+    {:height (* img-height ratio)
+     :width (* img-width ratio)}))
+
 (def caman-render!
-  (debounce (fn [caman state]
-    (.revert caman false)
+  (debounce
+   (fn [this caman state]
+    (.reset caman)
+    (.resize caman (clj->js (get-relative-size (r/state this))))
     (.brightness caman (:brightness state))
     (.contrast caman (:contrast state))
-    (.render caman)) 100))
+    (.render caman))
+   100
+   false))
 
 (defn- get-image-metrics [this]
   (let [image (js/Image.)]
@@ -26,13 +44,13 @@
 
 (defn resize! [this]
   (.log js/console "resize!" (r/dom-node this))
-  (-> this r/set-state {:client-height (get-height this)
-                        :client-width (get-width this)}))
+  (r/set-state this {:client-height (get-height this)
+                     :client-width (get-width this)}))
 
 (defn- create-editor! [this]
   (let [caman (js/Caman "#editor" (-> this r/props :editor-state :src))]
     (set! (.-onresize js/window) (partial resize! this))
-    (caman-render! caman (-> this r/props :editor-state :editor))
+    (caman-render! this caman (-> this r/props :editor-state :editor))
     (get-image-metrics this)
     (r/set-state this {:caman caman
                        :client-height (get-height this)
@@ -44,7 +62,7 @@
         src (-> this r/props :editor-state :src)]
     (when-not (nil? caman)
       (if (= (.-imageUrl caman) src)
-        (caman-render! caman props)))))
+        (caman-render! this caman props)))))
 
 (defn- is-ready [this]
   (and (-> this r/state :caman)
