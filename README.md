@@ -1,10 +1,7 @@
 # photoshack
 like photoshop but in the browser... just for shits
 
-start the build:
+## run it
 
-```
-lein figwheel
-```
-
-go to [localhost:3449](http://localhost:3449)
+1. `lein figwheel`
+2. open [localhost:3449](http://localhost:3449)
